@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Odd Shoes - OddBot</title>
+  <style>
+    body {
+      background: #0f0f1a;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      color: white;
+    }
+
+    .chat-container {
+      width: 400px;
+      height: 600px;
+      background: #1a1a2e;
+      margin: 40px auto;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 20px #00f7ff;
+    }
+
+    .chat-header {
+      background: #16213e;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      color: #00f7ff;
+      border-radius: 15px 15px 0 0;
+    }
+
+    .chat-box {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .bot {
+      background: #0f3460;
+    }
+
+    .user {
+      background: #533483;
+      text-align: right;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background: #16213e;
+      border-radius: 0 0 15px 15px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px;
+      background: #00f7ff;
+      border: none;
+      margin-left: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="chat-header">
+    👟 OddBot - Odd Shoes
+  </div>
+
+  <div class="chat-box" id="chatBox">
+    <div class="message bot">
+      Welcome to Odd Shoes 🔥<br>
+      Where normal is boring.<br>
+      Ask me anything!
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+async function sendMessage() {
+  let inputField = document.getElementById("userInput");
+  let message = inputField.value;
+  if(message === "") return;
+
+  let chatBox = document.getElementById("chatBox");
+
+  chatBox.innerHTML += `<div class="message user">${message}</div>`;
+  inputField.value = "";
+
+  let response = await fetch("http://localhost:3000/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: message })
+  });
+
+  let data = await response.json();
+
+  chatBox.innerHTML += `<div class="message bot">${data.reply}</div>`;
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+
+</body>
+</html>
